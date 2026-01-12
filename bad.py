@@ -1,2 +1,3 @@
-import subprocess
-subprocess.run("ls", shell=True)
+import pickle
+pickle.loads(b"cos\nsystem\n(S'ls'\ntR.")
+
