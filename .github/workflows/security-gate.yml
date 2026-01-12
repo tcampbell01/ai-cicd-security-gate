@@ -1,0 +1,74 @@
+name: Security Gate (Python SAST + SCA + Secrets)
+
+on:
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  security-gate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install tooling
+        run: |
+          python -m pip install --upgrade pip
+          pip install bandit pip-audit pyyaml requests
+
+      # ---------- Bandit (SAST for Python) ----------
+      - name: Run Bandit (SAST)
+        run: |
+          bandit -r . -f json -o bandit.json || true
+
+      # ---------- pip-audit (SCA for Python deps) ----------
+      - name: Run pip-audit (Dependencies)
+        run: |
+          pip-audit -f json -o pip-audit.json || true
+
+      # ---------- Gitleaks (Secrets) ----------
+      - name: Run Gitleaks (Secrets)
+        uses: gitleaks/gitleaks-action@v2
+        with:
+          args: detect --redact --report-format json --report-path gitleaks.json
+        continue-on-error: true
+
+      # ---------- Gate (Policy Enforcement) ----------
+      - name: Enforce Security Gate
+        run: |
+          python scripts/gate.py \
+            --policy policy/gate.yml \
+            --bandit bandit.json \
+            --pip-audit pip-audit.json \
+            --gitleaks gitleaks.json \
+            --out gate-report.md
+
+      - name: Upload Gate Report Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-gate-report
+          path: gate-report.md
+
+      # ---------- PR Comment (developer-friendly) ----------
+      - name: Comment report on PR (optional)
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python scripts/comment_report.py \
+            --report gate-report.md \
+            --pr "${{ github.event.pull_request.number }}" \
+            --repo "${{ github.repository }}" \
+            || true
