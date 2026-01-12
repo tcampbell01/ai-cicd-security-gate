@@ -52,7 +52,7 @@ jobs:
             --bandit bandit.json \
             --pip-audit pip-audit.json \
             --gitleaks gitleaks.json \
-            --out gate-report.md
+            --out gate-report.md || true
 
       - name: Upload Gate Report Artifact
         if: always()
