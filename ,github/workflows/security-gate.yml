@@ -1,4 +1,4 @@
-name: Security Gate (Python-only: Bandit + pip-audit + Gitleaks)
+name: Security Gate (Python SAST + SCA + Secrets)
 
 on:
   pull_request:
@@ -27,12 +27,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install bandit pip-audit pyyaml requests
 
-      # ---------- Bandit (SAST) ----------
+      # ---------- Bandit (SAST for Python) ----------
       - name: Run Bandit (SAST)
         run: |
-          bandit -r . -f json -o bandit.json || true
+          bandit -r . --exclude ./venv -f json -o bandit.json || true
 
-      # ---------- pip-audit (SCA) ----------
+      # ---------- pip-audit (SCA for Python deps) ----------
       - name: Run pip-audit (Dependencies)
         run: |
           pip-audit -f json -o pip-audit.json || true
@@ -43,23 +43,6 @@ jobs:
         with:
           args: detect --source . --redact --report-format json --report-path gitleaks.json
         continue-on-error: true
-
-      # ---------- DEBUG (prove output files exist + contents) ----------
-      - name: Debug: show scan outputs
-        if: always()
-        run: |
-          echo "== List repo root =="
-          ls -la
-          echo "== JSON outputs (if present) =="
-          ls -la *.json || true
-          echo "== File sizes =="
-          wc -c bandit.json || true
-          wc -c pip-audit.json || true
-          wc -c gitleaks.json || true
-          echo "== First 40 lines (sanity) =="
-          sed -n '1,40p' bandit.json || true
-          sed -n '1,40p' pip-audit.json || true
-          sed -n '1,40p' gitleaks.json || true
 
       # ---------- Gate (Policy Enforcement) ----------
       - name: Enforce Security Gate
@@ -78,7 +61,7 @@ jobs:
           name: security-gate-report
           path: gate-report.md
 
-      # ---------- PR Comment (optional) ----------
+      # ---------- PR Comment (developer-friendly) ----------
       - name: Comment report on PR (optional)
         if: always()
         env:
