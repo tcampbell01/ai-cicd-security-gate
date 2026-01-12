@@ -112,8 +112,6 @@ def main() -> int:
 
     return 1 if failed else 0
 
-AWS_SECRET_ACCESS_KEY=FAKEFAKEFAKEFAKEFAKE
-
 
 
 if __name__ == "__main__":
