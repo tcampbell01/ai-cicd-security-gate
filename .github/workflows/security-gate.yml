@@ -30,7 +30,7 @@ jobs:
       # ---------- Bandit (SAST for Python) ----------
       - name: Run Bandit (SAST)
         run: |
-          bandit -r . -f json -o bandit.json || true
+          bandit -r . --exclude ./venv -f json -o bandit.json || true
 
       # ---------- pip-audit (SCA for Python deps) ----------
       - name: Run pip-audit (Dependencies)
