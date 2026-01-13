@@ -40,19 +40,21 @@ jobs:
       # ---------- Gitleaks (Secrets) ----------
       - name: Run Gitleaks (Secrets)
         uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          args: detect --redact --report-format json --report-path gitleaks.json
-        continue-on-error: true
+          config-path: .gitleaks.toml
 
       # ---------- Gate (Policy Enforcement) ----------
       - name: Enforce Security Gate
+        id: gate
         run: |
           python scripts/gate.py \
             --policy policy/gate.yml \
             --bandit bandit.json \
             --pip-audit pip-audit.json \
             --gitleaks gitleaks.json \
-            --out gate-report.md
+            --out gate-report.md || echo "GATE_FAILED=true" >> $GITHUB_OUTPUT
 
       - name: Upload Gate Report Artifact
         if: always()
@@ -72,3 +74,8 @@ jobs:
             --pr "${{ github.event.pull_request.number }}" \
             --repo "${{ github.repository }}" \
             || true
+
+      # ---------- Fail workflow if gate failed ----------
+      - name: Fail if security issues found
+        if: steps.gate.outputs.GATE_FAILED == 'true'
+        run: exit 1
