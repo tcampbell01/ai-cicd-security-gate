@@ -38,21 +38,26 @@ jobs:
           pip-audit -f json -o pip-audit.json || true
 
       # ---------- Gitleaks (Secrets) ----------
+      - name: Install Gitleaks
+        run: |
+          wget -q https://github.com/gitleaks/gitleaks/releases/download/v8.24.3/gitleaks_8.24.3_linux_x64.tar.gz
+          tar -xzf gitleaks_8.24.3_linux_x64.tar.gz
+          sudo mv gitleaks /usr/local/bin/
+          
       - name: Run Gitleaks (Secrets)
-        uses: gitleaks/gitleaks-action@v2
-        with:
-          args: detect --redact --report-format json --report-path gitleaks.json
-        continue-on-error: true
+        run: |
+          gitleaks detect --source . --report-format json --report-path gitleaks.json || true
 
       # ---------- Gate (Policy Enforcement) ----------
       - name: Enforce Security Gate
+        id: gate
         run: |
           python scripts/gate.py \
             --policy policy/gate.yml \
             --bandit bandit.json \
             --pip-audit pip-audit.json \
             --gitleaks gitleaks.json \
-            --out gate-report.md
+            --out gate-report.md || echo "GATE_FAILED=true" >> $GITHUB_OUTPUT
 
       - name: Upload Gate Report Artifact
         if: always()
@@ -72,3 +77,8 @@ jobs:
             --pr "${{ github.event.pull_request.number }}" \
             --repo "${{ github.repository }}" \
             || true
+
+      # ---------- Fail workflow if gate failed ----------
+      - name: Fail if security issues found
+        if: steps.gate.outputs.GATE_FAILED == 'true'
+        run: exit 1
