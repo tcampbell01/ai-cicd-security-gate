@@ -41,7 +41,7 @@ jobs:
       - name: Run Gitleaks (Secrets)
         uses: gitleaks/gitleaks-action@v2
         with:
-          args: detect --source . --redact --report-format json --report-path gitleaks.json
+          args: detect --redact --report-format json --report-path gitleaks.json
         continue-on-error: true
 
       # ---------- Gate (Policy Enforcement) ----------
@@ -52,7 +52,7 @@ jobs:
             --bandit bandit.json \
             --pip-audit pip-audit.json \
             --gitleaks gitleaks.json \
-            --out gate-report.md || true
+            --out gate-report.md
 
       - name: Upload Gate Report Artifact
         if: always()
