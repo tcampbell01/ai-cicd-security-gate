@@ -1,0 +1,90 @@
+<svg width="800" height="500" xmlns="http://www.w3.org/2000/svg">
+  <!-- White background -->
+  <rect width="800" height="500" fill="white"/>
+  <defs>
+    <style>
+      .title { font: bold 18px Arial; fill: #000000; }
+      .label { font: 14px Arial; fill: #000000; }
+      .small-label { font: 12px Arial; fill: #000000; }
+      .box { fill: #ecf0f1; stroke: #000000; stroke-width: 2; rx: 8; }
+      .security-box { fill: #e8f5e8; stroke: #000000; stroke-width: 2; rx: 8; }
+      .gate-box { fill: #fff3cd; stroke: #000000; stroke-width: 2; rx: 8; }
+      .result-pass { fill: #d4edda; stroke: #000000; stroke-width: 2; rx: 8; }
+      .result-fail { fill: #f8d7da; stroke: #000000; stroke-width: 2; rx: 8; }
+      .arrow { stroke: #000000; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#000000" />
+    </marker>
+  </defs>
+  
+  <!-- Title -->
+  <text x="400" y="25" text-anchor="middle" class="title">AI-Assisted CI/CD Security Gate Architecture</text>
+  
+  <!-- Developer -->
+  <rect x="50" y="60" width="100" height="60" class="box"/>
+  <text x="100" y="85" text-anchor="middle" class="label">Developer</text>
+  <text x="100" y="105" text-anchor="middle" class="small-label">Creates PR</text>
+  
+  <!-- GitHub Actions -->
+  <rect x="250" y="60" width="120" height="60" class="box"/>
+  <text x="310" y="85" text-anchor="middle" class="label">GitHub Actions</text>
+  <text x="310" y="105" text-anchor="middle" class="small-label">Workflow Trigger</text>
+  
+  <!-- Security Tools -->
+  <rect x="100" y="180" width="100" height="80" class="security-box"/>
+  <text x="150" y="205" text-anchor="middle" class="label">Bandit</text>
+  <text x="150" y="225" text-anchor="middle" class="small-label">Python SAST</text>
+  <text x="150" y="245" text-anchor="middle" class="small-label">Code Analysis</text>
+  
+  <rect x="250" y="180" width="100" height="80" class="security-box"/>
+  <text x="300" y="205" text-anchor="middle" class="label">pip-audit</text>
+  <text x="300" y="225" text-anchor="middle" class="small-label">Dependency</text>
+  <text x="300" y="245" text-anchor="middle" class="small-label">Vulnerabilities</text>
+  
+  <rect x="400" y="180" width="100" height="80" class="security-box"/>
+  <text x="450" y="205" text-anchor="middle" class="label">Gitleaks</text>
+  <text x="450" y="225" text-anchor="middle" class="small-label">Secret</text>
+  <text x="450" y="245" text-anchor="middle" class="small-label">Detection</text>
+  
+  <!-- Security Gate -->
+  <rect x="250" y="320" width="120" height="80" class="gate-box"/>
+  <text x="310" y="345" text-anchor="middle" class="label">Security Gate</text>
+  <text x="310" y="365" text-anchor="middle" class="small-label">Policy Engine</text>
+  <text x="310" y="385" text-anchor="middle" class="small-label">Threshold Check</text>
+  
+  <!-- Results -->
+  <rect x="100" y="450" width="100" height="40" class="result-fail"/>
+  <text x="150" y="475" text-anchor="middle" class="label">❌ BLOCK</text>
+  
+  <rect x="400" y="450" width="100" height="40" class="result-pass"/>
+  <text x="450" y="475" text-anchor="middle" class="label">✅ ALLOW</text>
+  
+  <!-- Report -->
+  <rect x="550" y="320" width="100" height="80" class="box"/>
+  <text x="600" y="345" text-anchor="middle" class="label">Report</text>
+  <text x="600" y="365" text-anchor="middle" class="small-label">Security</text>
+  <text x="600" y="385" text-anchor="middle" class="small-label">Findings</text>
+  
+  <!-- Arrows -->
+  <line x1="150" y1="90" x2="250" y2="90" class="arrow"/>
+  <line x1="310" y1="120" x2="150" y2="180" class="arrow"/>
+  <line x1="310" y1="120" x2="300" y2="180" class="arrow"/>
+  <line x1="310" y1="120" x2="450" y2="180" class="arrow"/>
+  
+  <line x1="150" y1="260" x2="280" y2="320" class="arrow"/>
+  <line x1="300" y1="260" x2="310" y2="320" class="arrow"/>
+  <line x1="450" y1="260" x2="340" y2="320" class="arrow"/>
+  
+  <line x1="280" y1="400" x2="150" y2="450" class="arrow"/>
+  <line x1="340" y1="400" x2="450" y2="450" class="arrow"/>
+  <line x1="370" y1="360" x2="550" y2="360" class="arrow"/>
+  
+  <!-- Labels -->
+  <text x="200" y="75" text-anchor="middle" class="small-label">Pull Request</text>
+  <text x="180" y="150" text-anchor="middle" class="small-label">Parallel Scans</text>
+  <text x="350" y="290" text-anchor="middle" class="small-label">Results</text>
+  <text x="160" y="430" text-anchor="middle" class="small-label">Issues Found</text>
+  <text x="480" y="430" text-anchor="middle" class="small-label">No Issues</text>
+  <text x="520" y="340" text-anchor="middle" class="small-label">Generate</text>
+</svg>
