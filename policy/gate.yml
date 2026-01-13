@@ -1,0 +1,16 @@
+# vulnerabilities come from: Bandit --> python code security issues (SAST), pip-audit --> dependency vulnerabilities(SCA), Gitleaks --> Secrets exposure
+
+fail_on:
+  bandit:
+    severities: ["HIGH", "MEDIUM"]
+    max_allowed: 0
+
+  pip_audit:
+    severities: ["CRITICAL", "HIGH"]
+    max_allowed: 0
+
+  gitleaks:
+    max_allowed: 0
+
+report:
+  show_top: 25
